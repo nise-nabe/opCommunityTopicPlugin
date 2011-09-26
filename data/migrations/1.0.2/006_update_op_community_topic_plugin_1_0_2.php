@@ -27,36 +27,42 @@ class update_op_community_topic_plugin_1_0_2 extends opMigration
       $tableName = $table.'_image';
       $columns = $import->listTableColumns($tableName);
       $constrains = $import->listTableConstraints($tableName);
-      if (!$columns['post_id'] || !$constrains['post_id'])
+      if (!$columns['post_id'])
       {
         $export->createIndex($tableName, 'post_id_idx', array(
           'fields' => array('post_id')
         ));
 
-        $definition = array(
-                    'name'          => $tableName.'_file_id_file_id',
-                    'local'         => 'file_id',
-                    'foreign'       => 'id',
-                    'foreignTable'  => 'file',
-                    'onDelete'      => 'CASCADE'
-        );
-        $export->createForeignKey($tableName, $definition);
+        if (!$constrains['post_id'])
+        {
+          $definition = array(
+            'name'          => $tableName.'_file_id_file_id',
+            'local'         => 'file_id',
+            'foreign'       => 'id',
+            'foreignTable'  => 'file',
+            'onDelete'      => 'CASCADE'
+          );
+          $export->createForeignKey($tableName, $definition);
+        }
       }
 
-      if (!$columns['file_id'] || !$constrains['file_id'])
+      if (!$columns['file_id'])
       {
         $export->createIndex($tableName, 'file_id_idx', array(
           'fields' => array('file_id')
         ));
 
-        $definition = array(
-                    'name'          => $tableName.'_post_id_'.$table.'_id',
-                    'local'         => 'post_id',
-                    'foreign'       => 'id',
-                    'foreignTable'  => $table,
-                    'onDelete'      => 'CASCADE'
-        );
-        $export->createForeignKey($tableName, $definition);
+        if (!$constrains['file_id'])
+        {
+          $definition = array(
+            'name'          => $tableName.'_post_id_'.$table.'_id',
+            'local'         => 'post_id',
+            'foreign'       => 'id',
+            'foreignTable'  => $table,
+            'onDelete'      => 'CASCADE'
+          );
+          $export->createForeignKey($tableName, $definition);
+        }
       } 
     }
   }
